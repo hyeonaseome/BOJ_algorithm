@@ -33,16 +33,12 @@ public class Main {
 					}
 				}
 				
-
 				stack.push(cur_tower);
 			}
 		}
-
 		for(int i = 1; i < N+1; i++) {
 			sb.append(answer[i] + " ");
 		}
-
-
 		System.out.println(sb);
 	}
 }

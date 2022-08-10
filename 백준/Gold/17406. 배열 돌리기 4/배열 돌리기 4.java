@@ -12,18 +12,9 @@ public class Main {
 	static int min = Integer.MAX_VALUE;
 
 	public static void main(String[] args) throws Exception {
-
-		/**
-		 * 0. 입력파일 읽어들이기
-		 */
 		BufferedReader in = new BufferedReader(new InputStreamReader(System.in));
-
-		// 결과를 한 번에 출력하기 위한 StringBuilder
 		StringBuilder sb = new StringBuilder();
 
-		/**
-		 * 1. 입력 파일 객체화
-		 */
 		// 배열 A의 크기 N, M, 회전 연산의 개수 K
 		String[] split = in.readLine().split(" ");
 		N = Integer.parseInt(split[0]);
@@ -48,17 +39,7 @@ public class Main {
 		
 		isSelected = new boolean[K];
 		numbers = new int[K];
-
-		/**
-		 * 2. 알고리즘 풀기
-		 */
-
 		perm(0);
-
-		/**
-		 * 3. 정답 출력
-		 */
-
 		sb.append(min+ "\n");
 
 		System.out.println(sb);
@@ -66,7 +47,6 @@ public class Main {
 
 	private static void perm(int cnt) {
 		if (cnt == K) {
-			//System.out.println(Arrays.toString(numbers));
 			for (int i : numbers) {
 				int r = commands[i][0];
 				int c = commands[i][1];
@@ -80,33 +60,16 @@ public class Main {
 				for (int j = 1; j <= M; j++) {
 					sum += data[i][j];
 				}
-				//System.out.println("sum: "+  sum);
 				if (sum < min) {
 					min = sum;
 				}
 			}
 			
-			/*for (int i = 1; i <= N; i++) {
-				for (int j = 1; j <= M; j++) {
-					System.out.print(data[i][j]+ " ");
-				}
-				System.out.println();
-			}*/
-			
-			data = new int [N+1][M+1];
 			for (int i = 1; i <= N; i++) {
 				for (int j = 1; j <= M; j++) {
 					data[i][j] = dataOrigin[i][j];
 				}
 			}
-			/*System.out.println();
-			for (int i = 1; i <= N; i++) {
-				for (int j = 1; j <= M; j++) {
-					System.out.print(data[i][j]+ " ");
-				}
-				System.out.println();
-			}
-			System.out.println("min: " + min);*/
 			return;
 		}
 		

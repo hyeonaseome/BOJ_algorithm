@@ -1,7 +1,5 @@
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.PriorityQueue;
 import java.util.StringTokenizer;
@@ -23,12 +21,10 @@ public class Main {
 			StringTokenizer st = new StringTokenizer(in.readLine());
 			// 지원자의 수
 			int N = Integer.parseInt(st.nextToken());
-			ArrayList<interviewee> rank = new ArrayList<>();
 			PriorityQueue<interviewee> rank2 = new PriorityQueue<>( new Comparator<interviewee>() {
-
 				@Override
 				public int compare(interviewee o1, interviewee o2) {
-					return o1.inter - o2.inter;
+					return o1.doc - o2.doc;
 				}
 			});
 			
@@ -37,25 +33,20 @@ public class Main {
 				int doc = Integer.parseInt(st.nextToken());
 				int inter = Integer.parseInt(st.nextToken());
 				interviewee a = new interviewee(doc, inter);
-				rank.add(a);
 				rank2.add(a);
 			}
-			Collections.sort(rank, new Comparator<interviewee>() {
-				@Override
-				public int compare(interviewee o1, interviewee o2) {
-					return o2.doc - o1.doc;
-				}
-			});
 			
 			/**
 			 * 2. 알고리즘 풀기
 			 */
 			int count = 0;
+			int largeinter = rank2.peek().inter;
 			for (int i = 0; i < N; i++) {
-				if (rank2.peek() == rank.get(i)) {
+				if (rank2.peek().inter <= largeinter) {
 					count++;
+					largeinter = rank2.peek().inter;
 				}
-				rank2.remove(rank.get(i));
+				rank2.poll();
 			}
 			
 

@@ -7,7 +7,6 @@ public class Main {
 		StringBuilder sb = new StringBuilder();
 
 		int N = Integer.parseInt(in.readLine());
-		int copyN = N;
 		int count = 0;
 		int quotientFIve = N / 5;
 
@@ -22,8 +21,9 @@ public class Main {
 		if (count <= 0 ) {
 			count = -1;
 		}
-		
+
 		sb.append(count);
 		System.out.println(sb);
 	}
 }
+

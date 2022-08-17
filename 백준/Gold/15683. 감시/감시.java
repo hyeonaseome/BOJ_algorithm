@@ -1,122 +1,175 @@
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.Queue;
-import java.util.Scanner;
 
 public class Main {
-	public static int N, M;
-	public static int[][] map;
-	public static int[][] copyMap;
-	public static int[] output;
-	public static ArrayList<CCTV> cctvList;
-	public static int[] dx = {-1, 0, 1, 0}; // 상 우 하 좌 시계방향 순서 
-	public static int[] dy = {0, 1, 0, -1};
-	public static int answer = Integer.MAX_VALUE;
+	private static int N, M, min, startX, startY;
+	private static int[][] map, copymap;
+	private static ArrayList<CCTV> cctvs;
+	private static int[] numbers;
 
-	public static void main(String[] args) {
-		Scanner sc = new Scanner(System.in);
-		N = sc.nextInt();
-		M = sc.nextInt();
+	// 상, 우, 하, 좌
+	private static int[] dx = {-1, 0, 1, 0};
+	private static int[] dy = {0, 1, 0, -1};
+
+	// cctv 번호에 따른 경우의 수
+	private static int[] cases = {0, 4, 2, 4, 4, 1};
+	public static void main(String[] args) throws Exception {
+		BufferedReader in = new BufferedReader(new InputStreamReader(System.in));
+
+		// 결과를 한 번에 출력하기 위한 StringBuilder
+		StringBuilder sb = new StringBuilder();
+
+		/**
+		 * 1. 입력 파일 객체화
+		 */
+		String[] split = in.readLine().split(" ");
+		N = Integer.parseInt(split[0]);
+		M = Integer.parseInt(split[1]);
+		min = Integer.MAX_VALUE;
+
+		cctvs = new ArrayList<>();
 		map = new int[N][M];
-		cctvList = new ArrayList<>();
-
-		for(int i = 0; i < N; i++) {
-			for(int j = 0; j < M; j++) {
-				map[i][j] = sc.nextInt();
-
-				if(map[i][j] != 0 &&  map[i][j] != 6) {
-					cctvList.add(new CCTV(map[i][j], i, j));
+		for (int i = 0; i < N; i++) {
+			split = in.readLine().split(" ");
+			for (int j = 0; j< M; j++) {
+				map[i][j] = Integer.parseInt(split[j]);
+				if (map[i][j] != 0 && map[i][j] != 6) {
+					cctvs.add(new CCTV(map[i][j], i, j));
 				}
 			}
 		}
+		numbers = new int[cctvs.size()];
 
-		output = new int[cctvList.size()]; // 순열을 담을 배열 
-		permutation(0, cctvList.size());
+		// 1: 상, 우, 하, 좌
+		// 2: 상하, 좌우
+		// 3: 상우, 우하, 하좌, 좌상
+		// 4: 좌상우, 상우하, 우하좌, 하좌상
+		// 5: 상우좌하		
 
-		System.out.println(answer);
+		/**
+		 * 2. 알고리즘 풀기
+		 */
+		perm(0);
+		/**
+		 * 3. 정답 출력
+		 */
+		sb.append(min);
+
+		System.out.println(sb);
 	}
 
-	// DFS로 상하좌우 4방향 중에서 cctv의 총 개수, r만큼을 순서대로 뽑는 순열을 구함 
-	public static void permutation(int depth, int r) {
-		if(depth == r) {
-			// Copy original 'map' array
-			copyMap = new int[N][M];
-			for(int i = 0; i < map.length; i++) {
-				System.arraycopy(map[i], 0, copyMap[i], 0, map[i].length);
+	private static void perm(int cnt) {
+		// 기저 조건
+		if (cnt == cctvs.size()) {			
+			// map 복사
+			copymap = new int[N][M];
+			for (int i = 0; i< N; i++) {
+				for (int j = 0; j< M; j++) {
+					copymap[i][j] = map[i][j];
+				}
 			}
-						
-			// cctv번호와 순열로 뽑혀진 방향에 맞는 상하좌우 방향 설정 
-			for(int i = 0; i < cctvList.size(); i++) {
-				direction(cctvList.get(i), output[i]);
-			}
-			
-			// 사각 지대 구하기 
-			getBlindSpot();
 
+			for (int i = 0; i < cctvs.size(); i++) {
+				// cctv 위치 (탐색 시작 위치)
+				startX = cctvs.get(i).x;
+				startY = cctvs.get(i).y;
+
+				// cctv 번호에 따라 탐색 방향 결정
+				int dir = numbers[i];
+				CCTV cctv = cctvs.get(i);
+				switch(cctv.no) {
+				case 1:
+					watch(cctv, dir);
+					break;
+				case 2:
+					switch(dir) {
+					case 0: // 상, 하
+						watch(cctv, 0);
+						watch(cctv, 2);
+						break;
+					case 1: // 우, 좌
+						watch(cctv, 1);
+						watch(cctv, 3);
+						break;
+					}
+					break;
+				case 3:
+					switch(dir) {
+					case 0: // 상, 우
+						watch(cctv, 0);
+						watch(cctv, 1);
+						break;
+					case 1: // 우, 하
+						watch(cctv, 1);
+						watch(cctv, 2);
+						break;
+					case 2: // 하, 좌
+						watch(cctv, 2);
+						watch(cctv, 3);
+						break;
+					case 3: // 좌, 상
+						watch(cctv, 3);
+						watch(cctv, 0);
+						break;
+					}
+					break;
+				case 4:
+					switch(dir) {
+					case 0: // 좌, 상, 우
+						watch(cctv, 3);
+						watch(cctv, 0);
+						watch(cctv, 1);
+						break;
+					case 1: // 상, 우, 하
+						watch(cctv, 0);
+						watch(cctv, 1);
+						watch(cctv, 2);
+						break;
+					case 2: // 우, 하, 좌
+						watch(cctv, 1);
+						watch(cctv, 2);
+						watch(cctv, 3);
+						break;
+					case 3: // 하, 좌, 상
+						watch(cctv, 2);
+						watch(cctv, 3);
+						watch(cctv, 0);
+						break;
+					}
+					break;
+				case 5: // 상, 우, 좌, 하
+					for (int k = 0; k < 4;k++) {
+						watch(cctv, k);
+					}
+					break;
+				}
+			}
+
+			int count = 0;
+			// 사각지대의 크기측정
+			for (int i = 0; i < N; i++) {
+				for (int j = 0; j < M; j++) {
+					if(copymap[i][j] == 0) count++;
+				}
+			}
+
+			// 최소값 변경
+			if (min > count) {
+				min = count;
+			}
 			return;
 		}
-		
-		for(int i = 0; i < 4; i++) {
-			output[depth] = i;
-			permutation(depth+1, r);
+		// 유도 부분
+		int size = cases[cctvs.get(cnt).no];
+		for (int i = 0; i < size ; i++) {
+			numbers[cnt] = i;
+			perm(cnt + 1);
 		}
 	}
 
-	// 각 cctv 번호와 순열로 뽑혀진 방향에 맞게 감시 
-	public static void direction(CCTV cctv, int d) {
-		int cctvNum = cctv.num;
-
-		if(cctvNum == 1) {
-			if(d == 0) watch(cctv, 0); // 상 
-			else if(d == 1) watch(cctv, 1); // 우 
-			else if(d == 2) watch(cctv, 2); // 하  
-			else if(d == 3) watch(cctv, 3); // 좌 
-		} else if(cctvNum == 2) {
-			if(d == 0 || d == 2) {
-				watch(cctv, 0); watch(cctv, 2); // 상하 
-			} else {
-				watch(cctv, 1); watch(cctv, 3); // 좌우 
-			}
-		} else if(cctvNum == 3) {
-			if(d == 0) {
-				watch(cctv, 0); // 상우 
-				watch(cctv, 1);
-			} else if(d == 1) { 
-				watch(cctv, 1); // 우하 
-				watch(cctv, 2);
-			} else if(d == 2) { 
-				watch(cctv, 2); // 하좌 
-				watch(cctv, 3);
-			} else if(d == 3) { 
-				watch(cctv, 0); // 좌상 
-				watch(cctv, 3);
-			}
-		} else if(cctvNum == 4) {
-			if(d == 0) {
-				watch(cctv, 0); // 좌상우 
-				watch(cctv, 1);
-				watch(cctv, 3);
-			} else if(d == 1) {
-				watch(cctv, 0); // 상우하 
-				watch(cctv, 1);
-				watch(cctv, 2);
-			} else if(d == 2) {
-				watch(cctv, 1); // 좌하우 
-				watch(cctv, 2);
-				watch(cctv, 3);
-			} else if(d == 3) {
-				watch(cctv, 0); // 상좌하 
-				watch(cctv, 2);
-				watch(cctv, 3);
-			}
-		} else if(cctvNum == 5) { // 상우하좌
-			watch(cctv, 0);
-			watch(cctv, 1);
-			watch(cctv, 2);
-			watch(cctv, 3);
-		}
-	}
-	
 	// BFS로 방향에 맞게 감시 
 	public static void watch(CCTV cctv, int d) {
 		Queue<CCTV> queue = new LinkedList<>();
@@ -130,43 +183,38 @@ public class Main {
 			int ny = queue.poll().y + dy[d];
 
 			// 범위를 벗어나거나 벽을 만나면 끝 
-			if(nx < 0 || nx >= N || ny < 0 || ny >= M || copyMap[nx][ny] == 6) { 
+			if(nx < 0 || nx >= N || ny < 0 || ny >= M || copymap[nx][ny] == 6) { 
 				break;
 			}
 
-			if(copyMap[nx][ny] == 0) { 
-				copyMap[nx][ny] = -1; // 빈칸이라면 감시할 수 있다는 의미로 -1 
-				queue.add(new CCTV(cctv.num, nx, ny));
+			if(copymap[nx][ny] == 0) { 
+				copymap[nx][ny] = -1; // 빈칸이라면 감시할 수 있다는 의미로 -1 
+				queue.add(new CCTV(cctv.no, nx, ny));
 			} else { // 다른 cctv가 있거나 이미 감시된 칸이라면 
-				queue.add(new CCTV(cctv.num, nx, ny)); // 그냥 통과 
+				queue.add(new CCTV(cctv.no, nx, ny)); // 그냥 통과 
 			}
 		}
 	}
-	
-	// 사각 지대 구하기 
-	public static void getBlindSpot() {
-		int cnt = 0;
-		for(int i = 0; i < N; i++) {
-			for(int j = 0; j < M; j++) {
-				if(copyMap[i][j] == 0) {
-					cnt++;
-				}
-			}
-		}
-		answer = Math.min(answer, cnt);
+
+	private static boolean isValid(int x, int y) {
+		return 0 <= x && x <N && 0 <= y && y <M ;
 	}
-
-
 }
 
-class CCTV {
-	int num;
+class CCTV{
+	int no;
 	int x;
 	int y;
 
-	CCTV(int num, int x, int y) {
-		this.num = num;
+
+	public CCTV(int no, int x, int y) {
+		this.no = no;
 		this.x = x;
 		this.y = y;
+	}
+
+	@Override
+	public String toString() {
+		return "CCTV [no=" + no + ", x=" + x + ", y=" + y + "]";
 	}
 }

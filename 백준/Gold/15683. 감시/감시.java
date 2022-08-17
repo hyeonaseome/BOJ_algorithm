@@ -1,8 +1,6 @@
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.Queue;
 
 public class Main {
 	private static int N, M, min, startX, startY;
@@ -79,70 +77,69 @@ public class Main {
 
 				// cctv 번호에 따라 탐색 방향 결정
 				int dir = numbers[i];
-				CCTV cctv = cctvs.get(i);
-				switch(cctv.no) {
+				switch(cctvs.get(i).no) {
 				case 1:
-					watch(cctv, dir);
+					watch(dir);
 					break;
 				case 2:
 					switch(dir) {
 					case 0: // 상, 하
-						watch(cctv, 0);
-						watch(cctv, 2);
+						watch(0);
+						watch(2);
 						break;
 					case 1: // 우, 좌
-						watch(cctv, 1);
-						watch(cctv, 3);
+						watch(1);
+						watch(3);
 						break;
 					}
 					break;
 				case 3:
 					switch(dir) {
 					case 0: // 상, 우
-						watch(cctv, 0);
-						watch(cctv, 1);
+						watch(0);
+						watch(1);
 						break;
 					case 1: // 우, 하
-						watch(cctv, 1);
-						watch(cctv, 2);
+						watch(1);
+						watch(2);
 						break;
 					case 2: // 하, 좌
-						watch(cctv, 2);
-						watch(cctv, 3);
+						watch(2);
+						watch(3);
 						break;
 					case 3: // 좌, 상
-						watch(cctv, 3);
-						watch(cctv, 0);
+						watch(3);
+						watch(0);
 						break;
 					}
 					break;
 				case 4:
 					switch(dir) {
 					case 0: // 좌, 상, 우
-						watch(cctv, 3);
-						watch(cctv, 0);
-						watch(cctv, 1);
+						watch(3);
+						watch(0);
+						watch(1);
 						break;
 					case 1: // 상, 우, 하
-						watch(cctv, 0);
-						watch(cctv, 1);
-						watch(cctv, 2);
+						watch(0);
+						watch(1);
+						watch(2);
 						break;
 					case 2: // 우, 하, 좌
-						watch(cctv, 1);
-						watch(cctv, 2);
-						watch(cctv, 3);
+						watch(1);
+						watch(2);
+						watch(3);
 						break;
 					case 3: // 하, 좌, 상
-						watch(cctv, 2);
-						watch(cctv, 3);
-						watch(cctv, 0);
+						watch(2);
+						watch(3);
+						watch(0);
 						break;
 					}
 					break;
 				case 5: // 상, 우, 좌, 하
 					for (int k = 0; k < 4;k++) {
-						watch(cctv, k);
+						watch(k);
 					}
 					break;
 				}
@@ -170,29 +167,18 @@ public class Main {
 		}
 	}
 
-	// BFS로 방향에 맞게 감시 
-	public static void watch(CCTV cctv, int d) {
-		Queue<CCTV> queue = new LinkedList<>();
-		boolean[][] visited = new boolean[N][M];
+	private static void watch(int i) {
+		// 0: 상, 1: 우, 2: 하, 3: 좌
+		int testX = startX + dx[i];
+		int testY = startY + dy[i];
 
-		queue.add(cctv);
-		visited[cctv.x][cctv.y] = true;
-
-		while(!queue.isEmpty()) {
-			int nx = queue.peek().x + dx[d];
-			int ny = queue.poll().y + dy[d];
-
-			// 범위를 벗어나거나 벽을 만나면 끝 
-			if(nx < 0 || nx >= N || ny < 0 || ny >= M || copymap[nx][ny] == 6) { 
-				break;
+		// 9로 감시지역 표시
+		while(isValid(testX, testY) && copymap[testX][testY] != 6) {
+			if (copymap[testX][testY] == 0) {
+				copymap[testX][testY] = 9;
 			}
-
-			if(copymap[nx][ny] == 0) { 
-				copymap[nx][ny] = -1; // 빈칸이라면 감시할 수 있다는 의미로 -1 
-				queue.add(new CCTV(cctv.no, nx, ny));
-			} else { // 다른 cctv가 있거나 이미 감시된 칸이라면 
-				queue.add(new CCTV(cctv.no, nx, ny)); // 그냥 통과 
-			}
+			testX += dx[i];
+			testY += dy[i];
 		}
 	}
 
@@ -211,10 +197,5 @@ class CCTV{
 		this.no = no;
 		this.x = x;
 		this.y = y;
-	}
-
-	@Override
-	public String toString() {
-		return "CCTV [no=" + no + ", x=" + x + ", y=" + y + "]";
 	}
 }

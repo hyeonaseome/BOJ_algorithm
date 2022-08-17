@@ -40,22 +40,9 @@ public class Main {
 			}
 		}
 		numbers = new int[cctvs.size()];
-
-		// 1: 상, 우, 하, 좌
-		// 2: 상하, 좌우
-		// 3: 상우, 우하, 하좌, 좌상
-		// 4: 좌상우, 상우하, 우하좌, 하좌상
-		// 5: 상우좌하		
-
-		/**
-		 * 2. 알고리즘 풀기
-		 */
 		perm(0);
-		/**
-		 * 3. 정답 출력
-		 */
-		sb.append(min);
 
+		sb.append(min);
 		System.out.println(sb);
 	}
 
@@ -191,7 +178,6 @@ class CCTV{
 	int no;
 	int x;
 	int y;
-
 
 	public CCTV(int no, int x, int y) {
 		this.no = no;

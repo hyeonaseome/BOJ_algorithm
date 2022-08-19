@@ -16,26 +16,30 @@ public class Main {
 		// 결과를 한 번에 출력하기 위한 StringBuilder
 		StringBuilder sb = new StringBuilder();
 
+		/**
+		 * 1. 입력 파일 객체화
+		 */
 		String[] split = in.readLine().split(" ");
 		// 수빈이가 있는 위치
 		N = Integer.parseInt(split[0]);
 		// 동생이 있는 위치
 		K = Integer.parseInt(split[1]);
 		mintime = Integer.MAX_VALUE;
-		
-		// 배열 초기화
+
 		visited = new boolean[100_001];
 		times = new int[100_001];
 
-		// 동생이 수빈이를 찾는 걸로!
-		bfs(N, 0);
+		if (N >= K) {
+			System.out.println(N - K);
+		}else {
+			bfs(N, 0);
+			System.out.println(times[K]);
+		}
 
-		System.out.println(times[K]);
 		System.out.println(sb);
 	}
 	
 	private static void bfs(int start, int time) {
-		// 0정점 시작점
 		Queue<Integer> queue = new ArrayDeque<>();
 
 		visited[start] = true;

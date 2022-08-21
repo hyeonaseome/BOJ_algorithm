@@ -1,96 +1,84 @@
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.util.Stack;
-import java.util.StringTokenizer;
 
 public class Main {
-
+	private static char stone = 'O';
 	private static char space = '.';
 	private static char wall = 'X';
-	private static char rock = 'O';
-
+	
 	public static void main(String[] args) throws Exception {
 		BufferedReader in = new BufferedReader(new InputStreamReader(System.in));
 
 		StringBuilder sb = new StringBuilder();
 
-		StringTokenizer st = new StringTokenizer(in.readLine());
-		int R = Integer.parseInt(st.nextToken());
-		int C = Integer.parseInt(st.nextToken());
-
-		char[][] board = new char[R][C];
-		for (int i = 0; i < R; i++) {
-			st = new StringTokenizer(in.readLine());
-			board[i] = st.nextToken().toCharArray();
+		String[] split = in.readLine().split(" ");
+		int R = Integer.parseInt(split[0]);
+		int C = Integer.parseInt(split[1]);
+		
+		char[][] map = new char[R][C];
+		for (int i = 0; i< R; i++) {
+			map[i] = in.readLine().toCharArray();
 		}
-		st = new StringTokenizer(in.readLine());
-		int N = Integer.parseInt(st.nextToken());
-
-		Row [] thorwRows = new Row[C];
-		for (int i = 0; i < C; i++) {
-			thorwRows[i] = new Row();
-			thorwRows[i].route.add(new loc(0, i));
+		
+		rows[] ttrow = new rows[C];
+		for (int i = 0; i< C; i++) {
+			ttrow[i] = new rows();
+			ttrow[i].routes.add(new loc(0, i));
 		}
-
-
-		for (int i = 0; i< N ; i++) {
-			st = new StringTokenizer(in.readLine());
-			int throwRow = Integer.parseInt(st.nextToken()) - 1;
-			int rockR = 0;
-			int rockC = throwRow;
+		int N = Integer.parseInt(in.readLine());
+		for (int i = 0; i< N; i++) {
+			int row = Integer.parseInt(in.readLine()) - 1;
+			int stoneR = 0;
+			int stoneC = 0;
 			while(true) {
-				rockR = thorwRows[throwRow].route.peek().r;
-				rockC = thorwRows[throwRow].route.peek().c;
-				if (board[rockR][rockC] == space) {
+				stoneR = ttrow[row].routes.peek().r;
+				stoneC = ttrow[row].routes.peek().c;
+				if(map[stoneR][stoneC] == space) {
 					break;
 				}else {
-					thorwRows[throwRow].route.pop();
+					ttrow[row].routes.pop();
 				}
 			}
-
+			
 			while(true) {
-				if (rockR == R - 1||board[rockR + 1][rockC] == wall) {
-					board[rockR][rockC] = rock;
+				if(stoneR == R - 1 || map[stoneR + 1][stoneC] == wall) {
+					map[stoneR][stoneC] = stone;
 					break;
 				}
-				else if(board[rockR + 1][rockC] == space){
-					rockR = rockR + 1;
-					thorwRows[throwRow].route.add(new loc(rockR, rockC));
+				else if(map[stoneR + 1][stoneC] == space) {
+					stoneR = stoneR + 1;
+					ttrow[row].routes.add(new loc(stoneR, stoneC));
 				}
-				else if (board[rockR + 1][rockC] == rock) {
-					if(rockC - 1 >= 0 && board[rockR][rockC - 1] == space && board[rockR + 1][rockC - 1] == space) {
-						rockC = rockC - 1;
-					}
-					else if(rockC + 1 < C && board[rockR][rockC + 1] == space && board[rockR + 1][rockC + 1] == space) {
-						rockC = rockC + 1;
-					}
-					else {
-						board[rockR][rockC] = rock;
+				else if (map[stoneR + 1][stoneC] == stone) {
+					if(0<=stoneC - 1 && map[stoneR][stoneC - 1] == space && map[stoneR + 1][stoneC - 1] == space) {
+						stoneC = stoneC - 1;
+					}else if (stoneC + 1 < C && map[stoneR][stoneC + 1] == space && map[stoneR + 1][stoneC + 1] == space) {
+						stoneC = stoneC + 1;
+					}else {
+						map[stoneR][stoneC] = stone;
 						break;
 					}
 				}
 			}
+
+		}
+		for (int i = 0; i< R; i++) {
+			sb.append(String.valueOf(map[i])).append("\n");
 		}
 
-		for (int i = 0; i < R; i++) {
-			sb.append(String.valueOf(board[i])).append("\n");
-		}
 		System.out.println(sb);
 	}
-	static class Row {
-		Stack<loc> route = new Stack<>();		
-	}
-
-	static class loc {
-		public int r;
-		public int c;
+	static class loc{
+		int r;
+		int c;
 		public loc(int r, int c) {
+			super();
 			this.r = r;
 			this.c = c;
 		}
-		@Override
-		public String toString() {
-			return "(" + r + ", " + c + ")";
-		}
+	}
+	static class rows{
+		Stack<loc> routes = new Stack<>();		
 	}
 }

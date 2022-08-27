@@ -5,10 +5,10 @@ public class Main {
 	private static int N, maxScore; // N: 이닝 수  N(2 ≤ N ≤ 50)
 	private static int[][] players;
 	private static int[] numbers;
+
 	public static void main(String[] args) throws Exception {
 		BufferedReader in = new BufferedReader(new InputStreamReader(System.in));
 		StringBuilder sb = new StringBuilder();
-
 		N = Integer.parseInt(in.readLine());
 
 		players = new int[N][9];
@@ -29,8 +29,6 @@ public class Main {
 		maxScore = 0;
 
 		perm(0, 0);
-	
-
 		// 최고 점수 얻기
 		sb.append(maxScore);
 		System.out.println(sb);
@@ -56,79 +54,24 @@ public class Main {
 		}
 	}
 
-	private static void play() {
-		// 야구 시작
-		int playerNum = 0; // 현재 타자의 번호
-		int outCnt = 0; // 1이닝 3아웃시 이닝 종료
-
-		boolean[] plates =  new boolean[4];// 0:홈 1: 1루 2: 2루, 3: 3루
-
+	static void play() {
 		int score = 0;
-		for (int i = 0; i < N; i++) { //N개의 이닝 소화
-			while(outCnt < 3) {
-				//현 타자의 점수
+		int playerNum = 0; // 현재 타자의 번호s
+		for (int i = 0; i < N; i++) {
+			int out = 0;
+			int base = 0;
+			while (out < 3) {
 				int curScore = players[i][numbers[playerNum]];
-				switch(curScore) {
-				case 0: // 아웃
-					outCnt++;
-					break;
-				case 1: // 타자와 모든 주자가 한 루씩 진루
-					for (int j = 3; j >= 1; j--) {
-						if(plates[j]) { // 주자가 있다면
-							plates[j] = false;
-							if(j >= 3) {// 득점권이라면
-								score++;
-							}else {
-								plates[j + 1] = true; // 진루
-							}
-						}
-					}
-					// 타자 진루
-					plates[1] = true;
-					break;
-				case 2: // 타자와 모든 주자가 두 루씩 진루
-					for (int j = 3; j >= 1; j--) {
-						if(plates[j]) { // 주자가 있다면
-							plates[j] = false;
-							if(j >= 2) {// 득점권이라면
-								score++;
-							}else {
-								plates[j + 2] = true; // 진루
-							}
-						}
-					}
-					// 타자 진루
-					plates[2] = true;
-					break;
-				case 3: // 타자와 모든 주자가 세 루씩 진루
-					for (int j = 3; j >= 1; j--) {
-						if(plates[j]) { // 주자가 있다면
-							plates[j] = false;
-							score++;
-						}
-					}
-					// 타자 진루
-					plates[3] = true;
-					break;
-				case 4: // 타자와 모든 주자가 홈까지 진루
-					for (int j = 3; j >= 1; j--) {
-						if(plates[j]) { // 주자가 있다면
-							score++;
-						}
-					}
-					// 타자도 점수
-					score++;
-					plates =  new boolean[4];
-					break;
+				if (curScore == 0)
+					out++;
+				else {
+					base = (base + 1) << curScore;
+					score += Integer.bitCount(base / 16);
+					base %= 16;
 				}
-
-				// 다음 타자로
 				playerNum = (playerNum + 1) % 9;
 			}
-			outCnt = 0; // 다음 이닝을 위한 outCnt초기화
-			plates =  new boolean[4];
 		}
-		
 		// 경기끝  최고 점수 갱신
 		if (maxScore < score) {
 			maxScore = score;

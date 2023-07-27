@@ -20,8 +20,12 @@ class Solution {
     }
     
     public void dfs(int cnt, int k, int[][] dungeons) {
-        if( cnt == N) {
-            maxDungeon = Math.max(maxDungeon, cnt);
+        if(cnt == N) {
+            maxDungeon = N;
+            return;
+        }
+        
+        if (maxDungeon == N){
             return;
         }
         

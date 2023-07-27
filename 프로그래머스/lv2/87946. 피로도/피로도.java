@@ -8,9 +8,7 @@ class Solution {
     public int N, maxDungeon;
     public boolean[] isSelected;
     
-    public int solution(int k, int[][] dungeons) {
-        int answer = -1;
-        
+    public int solution(int k, int[][] dungeons) {  
         N = dungeons.length;
         maxDungeon = 0;
         isSelected = new boolean[N];

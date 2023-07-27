@@ -1,4 +1,5 @@
 import java.io.BufferedReader;
+import java.io.FileInputStream;
 import java.io.InputStreamReader;
 
 public class Main {
@@ -7,12 +8,9 @@ public class Main {
 		StringBuilder sb = new StringBuilder();
 		
 		int[] alphabets = new int[26];
-		
 		String str = in.readLine().toUpperCase();
-		
-		boolean IsMulti = false;
 		int maxUseCnt = 0;
-		char maxUseChar = 'a';
+		int maxUseIdx = -1;
 		
 		for (int i = 0; i< str.length(); i++) {
 			int alphabetIdx = str.charAt(i) - 'A';
@@ -20,17 +18,16 @@ public class Main {
 			
 			if (maxUseCnt < alphabets[alphabetIdx]) {
 				maxUseCnt = alphabets[alphabetIdx];
-				maxUseChar = str.charAt(i);
-				IsMulti = false;
+				maxUseIdx = alphabetIdx;
 			} else if (maxUseCnt == alphabets[alphabetIdx]) {
-				IsMulti = true;
+				maxUseIdx = -1;
 			}
 		}
 		
-		if (IsMulti) {
+		if (maxUseIdx == -1) {
 			sb.append("?");
 		} else{
-			sb.append(maxUseChar);
+			sb.append((char) (maxUseIdx + 65));
 		}
 		
 		System.out.println(sb);

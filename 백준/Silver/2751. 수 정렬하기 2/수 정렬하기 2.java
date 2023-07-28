@@ -1,6 +1,8 @@
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
-import java.util.PriorityQueue;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 public class Main {
 	public static void main(String[] args) throws Exception {
@@ -9,13 +11,15 @@ public class Main {
 
 		int N = Integer.parseInt(in.readLine()); // 수의 개수
 
-		PriorityQueue<Integer> pq = new PriorityQueue<>();
+		List<Integer> list = new ArrayList<>();
 		for (int i = 0; i < N; i++) {
-			pq.offer(Integer.parseInt(in.readLine()));
+			list.add(Integer.parseInt(in.readLine()));
 		}
 
-		while (!pq.isEmpty()) {
-			sb.append(pq.poll()).append("\n");
+		Collections.sort(list);
+
+		for (int i = 0; i < N; i++) {
+			sb.append(list.get(i)).append("\n");
 		}
 
 		System.out.println(sb);

@@ -3,7 +3,7 @@ class Solution {
     public int solution(int n) {
         memo = new int[n + 1];
 
-        return fibo(n) % 1234567;
+        return fibo(n);
     }
     private static int fibo(int n) {
         if (n == 0) {

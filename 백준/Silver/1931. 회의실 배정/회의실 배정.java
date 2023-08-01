@@ -4,22 +4,6 @@ import java.util.Arrays;
 import java.util.Comparator;
 
 public class Main {
-	public static class Meeting {
-		int start;
-		int end;
-
-		public Meeting(int start, int end) {
-			this.start = start;
-			this.end = end;
-		}
-
-		@Override
-		public String toString() {
-			return this.start + " " + this.end;
-		}
-
-	}
-
 	private static int START = 0;
 	private static int END = 1;
 

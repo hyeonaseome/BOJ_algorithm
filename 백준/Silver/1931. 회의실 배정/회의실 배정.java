@@ -20,6 +20,9 @@ public class Main {
 
 	}
 
+	private static int START = 0;
+	private static int END = 1;
+
 	public static void main(String[] args) throws Exception {
 		BufferedReader in = new BufferedReader(new InputStreamReader(System.in));
 		StringBuilder sb = new StringBuilder();
@@ -27,30 +30,29 @@ public class Main {
 		// 회의의 수 N(1 ≤ N ≤ 100,000)
 		int N = Integer.parseInt(in.readLine());
 
-		Meeting[] meetings = new Meeting[N];
+		int[][] meetings = new int[N][2];
 		for (int i = 0; i < N; i++) {
 			String[] split = in.readLine().split(" ");
-			int start = Integer.parseInt(split[0]);
-			int end = Integer.parseInt(split[1]);
-			meetings[i] = new Meeting(start, end);
+			meetings[i][START] = Integer.parseInt(split[0]);
+			meetings[i][END] = Integer.parseInt(split[1]);
 		}
 
-		Arrays.sort(meetings, new Comparator<Meeting>() {
+		Arrays.sort(meetings, new Comparator<int[]>() {
 			@Override
-			public int compare(Meeting o1, Meeting o2) {
-				if (o1.end != o2.end)
-					return o1.end - o2.end;
+			public int compare(int[] o1, int[] o2) {
+				if (o1[END] != o2[END])
+					return o1[END] - o2[END];
 
-				return o1.start - o2.start;
+				return o1[START] - o2[START];
 			}
 
 		});
 
 		int cnt = 1;
-		int end = meetings[0].end;
+		int end = meetings[0][END];
 		for (int i = 1; i < N; i++) {
-			if (meetings[i].start >= end) {
-				end = meetings[i].end;
+			if (meetings[i][START] >= end) {
+				end = meetings[i][END];
 				cnt++;
 			}
 		}

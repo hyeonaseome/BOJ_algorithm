@@ -9,20 +9,16 @@ class Solution {
             pq.add(scoville[i]);
         }
         
-        while(true) {
-            if (pq.peek() >= K) {
-                break;
-            }
-            
+        while(pq.peek() < K) {
             if (pq.size() == 1) {
                 answer = -1;
                 break;
             }
             answer++;
+            
             int scoville1 = pq.poll();
             int scoville2 = pq.poll();
             pq.add(scoville1 + scoville2 * 2);
-            
         }
         return answer;
     }

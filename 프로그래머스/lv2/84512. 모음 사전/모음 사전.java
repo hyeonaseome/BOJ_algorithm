@@ -6,21 +6,13 @@ class Solution {
         int answer = 0;
 
         dfs(0, "");
-        Collections.sort(list);
         
-        for (int i = 0; i < list.size(); i++) {
-            if (list.get(i).equals(word)) {
-                answer = i + 1;
-                break;
-            }
-        }
-        return answer;
+        return list.indexOf(word);
     }
     
     public void dfs(int cnt, String cur) {
 
-        if (!cur.equals(""))
-            list.add(cur);
+        list.add(cur);
         
         if (cnt == 5) {
             return;

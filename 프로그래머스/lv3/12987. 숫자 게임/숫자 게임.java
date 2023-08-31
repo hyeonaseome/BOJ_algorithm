@@ -9,9 +9,6 @@ class Solution {
         
         int j = B.length - 1;
         for (int i = A.length - 1; i >= 0; i--) {
-            if (j < 0) {
-                break;
-            }
             if (A[i] < B[j]) {
                 answer++;
                 j--;

@@ -13,16 +13,12 @@ int main() {
     que.push(i);
   }
 
-  int num = 1;
+
   while (que.size() > 1) {
-    if (num % 2 == 1) {
-      que.pop();
-    } else {
-      int front = que.front();
-      que.pop();
-      que.push(front);
-    }
-    num++;
+    que.pop();
+    int front = que.front();
+    que.pop();
+    que.push(front);
   }
 
   cout << que.front();
